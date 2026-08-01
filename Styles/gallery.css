@@ -1,0 +1,11 @@
+/* Gallery grid, completing what site.css already provides.
+   The runtime used to add the grid class to each slide and size each thumbnail
+   inline; build.py now writes the class and the crop into the markup, and these
+   rules give the crop something to be positioned against. */
+
+.sqs-gallery-block-grid .slide .margin-wrapper a.image-slide-anchor {
+  position: relative;
+  overflow: hidden;
+}
+.sqs-gallery-block-grid .slide { float: left; }
+.sqs-gallery-block-grid .sqs-gallery { overflow: hidden; }

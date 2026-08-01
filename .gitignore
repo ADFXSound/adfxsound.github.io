@@ -1,0 +1,12 @@
+# The pristine capture and the build/verification scripts. Neither is served.
+#
+# _source/ is ~63 MB of full-size originals and has been moved out to
+# ..\ADFXSOUND_SOURCE_ARCHIVE to keep this folder small. Copy it back in before
+# running `python _tools/build.py`; without it the build stops immediately.
+_source/
+_tools/
+
+# OS and editor noise
+Thumbs.db
+desktop.ini
+.DS_Store

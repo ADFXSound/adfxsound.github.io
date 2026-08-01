@@ -1,0 +1,31 @@
+/* Local stand-in for Adobe Typekit's futura-pt, which was never part of the mirror
+   and cannot legally be self-hosted (Adobe Fonts is licensed per-domain via a kit).
+
+   Jost by indestructible type*, SIL Open Font License 1.1 - self-hosting is permitted.
+   It is registered under the futura-pt family name so the existing Squarespace
+   stylesheet picks it up with no selector changes. Swap the src below if you license
+   real Futura, or delete this file to fall back to the system sans-serif stack. */
+
+@font-face {
+  font-family: 'futura-pt';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('../Fonts/jost-variable.woff2') format('woff2-variations'),
+       url('../Fonts/jost-variable.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'futura-pt';
+  font-style: italic;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('../Fonts/jost-variable-italic.woff2') format('woff2-variations'),
+       url('../Fonts/jost-variable-italic.woff2') format('woff2');
+}
+
+/* The Squarespace stylesheet declares `font-family:futura-pt` with no fallback list,
+   so give the browser something sane if the file above is ever missing. */
+:root {
+  --adfx-sans: 'futura-pt', 'Century Gothic', 'Avenir Next', 'Trebuchet MS', Helvetica, Arial, sans-serif;
+}

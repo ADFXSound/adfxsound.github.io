@@ -1,0 +1,26 @@
+# build.py writes LF. Without this, git on Windows would check the generated pages
+# back out with CRLF and every rebuild would look like a whole-file change.
+* text=auto eol=lf
+
+*.html   text eol=lf
+*.css    text eol=lf
+*.js     text eol=lf
+*.mjs    text eol=lf
+*.py     text eol=lf
+*.md     text eol=lf
+*.svg    text eol=lf
+*.txt    text eol=lf
+*.ps1    text eol=crlf
+
+*.jpg    binary
+*.jpeg   binary
+*.png    binary
+*.gif    binary
+*.ico    binary
+*.mp3    binary
+*.mp4    binary
+*.webm   binary
+*.woff   binary
+*.woff2  binary
+*.ttf    binary
+*.eot    binary

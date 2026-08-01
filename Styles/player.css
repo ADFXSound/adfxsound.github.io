@@ -1,0 +1,12 @@
+/* Additions for the hand-written audio player in Scripts/player.js.
+   The bulk of the player's appearance comes from the re-scoped component rules in
+   blocks.css; these cover what Squarespace's runtime used to set from JavaScript. */
+
+.audio-block .sqs-widgets-audio-player .track { cursor: pointer; }
+.audio-block .sqs-widgets-audio-player .action { outline: none; }
+
+/* Full-screen shim laid down while dragging so the pointer cannot escape. */
+.scrubber-shim {
+  position: fixed; inset: 0; z-index: 10000000;
+  cursor: ew-resize; user-select: none; -webkit-user-select: none;
+}
