@@ -80,11 +80,18 @@
   --amber-press: #d8902a;
   --amber-dim: #6b4a14;
 
+  /* Deliberately outside the GARLAND scale. The play button borrows the universal
+     video-player red because being instantly recognisable matters more there than
+     staying on palette; nothing else on the site should reach for these. */
+  --play: #fe3038;
+  --play-press: #c31f27;
+
   --text: #c7d4e0;
   --text-bright: #ffffff;
   --text-soft: #9aa6b6;
   --text-muted: #6a7482;
   --on-amber: #101216;
+  --on-play: #ffffff;
 
   --ui: 'futura-pt', 'IBM Plex Sans', 'Segoe UI', sans-serif;
   --display: 'garland-display', 'Barlow Condensed', 'Bahnschrift', sans-serif;
@@ -299,19 +306,13 @@ body .main-nav .active-link > a:visited {
   background: var(--amber-dim);
 }
 
-/* ---- media: dim structural framing, amber on hover ---- */
+/* ---- media: dim structural framing ---- */
 /* The brushsmear divider is decorative and full-bleed, so it opts out of the frame.
    It carries a per-page block id, hence matching on the image src instead. */
 
 .sqs-block-image .image-block-wrapper:not(:has(img[src*='brushsmear'])),
 .sqs-block-embed .sqs-embed-container {
   border: 1px solid var(--hairline);
-  transition: border-color .15s ease-out;
-}
-
-.sqs-block-image .image-block-wrapper:not(:has(img[src*='brushsmear'])):hover,
-.sqs-block-embed .sqs-embed-container:hover {
-  border-color: var(--steel);
 }
 
 .sqs-gallery-block-grid .slide img {
@@ -433,6 +434,67 @@ body .main-nav .active-link > a:visited {
   line-height: 1.7em;
   letter-spacing: 0;
   color: var(--text-soft);
+}
+
+
+/* ---- youtube facade (driven by Scripts/youtube.js) ---- */
+/* The facade button takes the iframe's place inside .embed-block-wrapper, whose aspect
+   ratio comes from an inline padding-bottom, so it needs the same absolute fill that
+   blocks.css gives the iframe. */
+
+.yt-facade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--bg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.yt-facade:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: -2px;
+}
+
+/* Flat red slab with a white triangle. The slab keeps GARLAND's square, unshaded badge
+   shape; only the colours are borrowed, so it reads as a play control on sight without
+   turning into a rounded YouTube lozenge. */
+
+.yt-facade-play {
+  position: relative;
+  display: block;
+  width: 62px;
+  height: 44px;
+  background-color: var(--play);
+  border-bottom: 2px solid var(--play-press);
+}
+
+.yt-facade-play::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  /* Optical rather than geometric centring: a right-pointing triangle carries its mass
+     on the left, so it needs less than half its width taken back. */
+  margin-left: -6px;
+  margin-top: -9px;
+  border-style: solid;
+  border-width: 9px 0 9px 15px;
+  border-color: transparent transparent transparent var(--on-play);
 }
 
 
