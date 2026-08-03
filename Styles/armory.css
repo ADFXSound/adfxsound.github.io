@@ -26,9 +26,17 @@
 @font-face {
   font-family: 'futura-pt';
   font-style: normal;
-  font-weight: 600 700;
+  font-weight: 600;
   font-display: swap;
   src: url('../Fonts/ibm-plex-sans-latin-600-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'futura-pt';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../Fonts/ibm-plex-sans-latin-700-normal.woff2') format('woff2');
 }
 
 @font-face {
@@ -163,9 +171,14 @@ body .main-nav a:hover {
   color: var(--text-bright);
 }
 
+/* amber-bright rather than amber: at 14px the apparent weight of a nav label is driven
+   by contrast, not stroke width, so the mid-luminance amber read lighter than the white
+   hover state despite being a heavier face. #ffc15a closes most of that gap. */
+
 body .main-nav .active-link > a,
 body .main-nav .active-link > a:visited {
-  color: var(--amber);
+  color: var(--amber-bright);
+  font-weight: 700;
 }
 
 #mobileNav,
