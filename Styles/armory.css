@@ -1,0 +1,446 @@
+/* GARLAND "Armory Black (Amber)" theme for adfxsound.com.
+ *
+ * Mirrors the design language of GARLAND's RmlUi documents
+ * (Plugins/RmlUi/UI/mainmenu.rcss, mainhud.rcss, prematch.rcss): flat near-black
+ * surfaces, zero border-radius, no gradients or shadows, and amber as a strict BUDGET
+ * rather than a theme colour. Amber appears only on the active nav rail, audio
+ * progress, CTA buttons and hover rails; everything else sits in the neutral tiers.
+ *
+ * Purely additive, so it must load LAST. It re-points the `futura-pt` family at
+ * IBM Plex Sans rather than rewriting site.css's minified selectors, which only works
+ * because a later @font-face for the same family/style/weight wins the match. The
+ * same trick is what fonts.css already uses to map Jost onto futura-pt.
+ */
+
+
+/* ---- font voices (GARLAND: garland-ui / garland-display / garland-mono) ---- */
+
+@font-face {
+  font-family: 'futura-pt';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../Fonts/ibm-plex-sans-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'futura-pt';
+  font-style: normal;
+  font-weight: 600 700;
+  font-display: swap;
+  src: url('../Fonts/ibm-plex-sans-latin-600-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'futura-pt';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../Fonts/ibm-plex-sans-latin-400-italic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'garland-display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../Fonts/barlow-condensed-latin-700-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'garland-mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../Fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+}
+
+
+/* ---- palette ---- */
+
+:root {
+  --bg: #0a0b10;
+  --strip: #0e1015;
+  --row: #16181d;
+  --row-hover: #1c1f25;
+  --row-sel: #26292f;
+  --hairline: #1f2228;
+  --steel: #2a2e35;
+
+  --amber: #f2a83c;
+  --amber-bright: #ffc15a;
+  --amber-press: #d8902a;
+  --amber-dim: #6b4a14;
+
+  --text: #c7d4e0;
+  --text-bright: #ffffff;
+  --text-soft: #9aa6b6;
+  --text-muted: #6a7482;
+  --on-amber: #101216;
+
+  --ui: 'futura-pt', 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  --display: 'garland-display', 'Barlow Condensed', 'Bahnschrift', sans-serif;
+  --mono: 'garland-mono', 'IBM Plex Mono', Consolas, monospace;
+}
+
+
+/* ---- surfaces + body copy ---- */
+/* Plex Sans sets wider than Jost, so drop 17px -> 16px and neutralise the tracking. */
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--ui);
+  font-size: 16px;
+  line-height: 1.65em;
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+body a,
+body a:visited {
+  color: var(--text);
+}
+
+body a:hover {
+  color: var(--text-bright);
+}
+
+#pageWrapper {
+  border-color: var(--hairline);
+}
+
+
+/* ---- display tier (GARLAND .mm-title / .hero-title) ---- */
+
+body h1,
+body h2,
+body h3,
+body h4 {
+  font-family: var(--display);
+  font-weight: 700;
+  color: var(--text-bright);
+  letter-spacing: 2px;
+  line-height: 1.15em;
+  text-transform: uppercase;
+}
+
+body h1 { font-size: 40px; }
+body h2 { font-size: 30px; }
+body h3 { font-size: 22px; }
+body h4 { font-size: 18px; }
+
+/* The logo lives inside an h1 and must not inherit the display tier. */
+#logo h1.logo,
+#logo .logo {
+  font-size: 0;
+  letter-spacing: 0;
+}
+
+body blockquote {
+  border-left-color: var(--amber-dim);
+  color: var(--text-soft);
+  font-style: normal;
+}
+
+
+/* ---- nav ---- */
+/* Amber marks the current page, which is the one thing in the nav that carries state.
+   GARLAND's 3dp selection rail is a vertical-stack idiom, so on a horizontal nav the
+   accent rides the label itself. */
+
+body .main-nav a,
+body .main-nav a:visited {
+  font-family: var(--ui);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  transition: color .15s ease-out;
+}
+
+body .main-nav a:hover {
+  color: var(--text-bright);
+}
+
+body .main-nav .active-link > a,
+body .main-nav .active-link > a:visited {
+  color: var(--amber);
+}
+
+#mobileNav,
+#mobileMenuLink {
+  background-color: var(--row);
+}
+
+
+/* ---- metadata tier: gear captions become telemetry readouts ---- */
+/* The captions are already caps with `//` separators - mono is all they were missing. */
+
+.image-caption,
+.image-caption p,
+.sqs-block-image .image-caption p,
+.video-caption,
+.video-caption p {
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.7em;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #7d8da0;
+}
+
+
+/* ---- audio players as HUD meters (GARLAND .bar-fuel) ---- */
+/* The stock `played` fill is rgba(0,0,0,.03), i.e. invisible on a dark panel. */
+
+.audio-block .sqs-widgets-audio-player:not(.classic).dark {
+  --primary-text: var(--text-bright);
+  --secondary-text: var(--text-muted);
+  background: #0e131a;
+  border-left: 3px solid var(--amber-dim);
+  transition: border-color .15s ease-out, background-color .15s ease-out;
+}
+
+.audio-block .sqs-widgets-audio-player:not(.classic).dark:hover {
+  border-left-color: var(--amber);
+  background: #141b24;
+}
+
+.audio-block .sqs-widgets-audio-player:not(.classic).dark .played {
+  background: rgba(242, 168, 60, .14);
+}
+
+.audio-block .sqs-widgets-audio-player:not(.classic).dark .played .icon,
+.audio-block .sqs-widgets-audio-player:not(.classic).dark:hover .played .icon {
+  width: 2px;
+  background-color: var(--amber);
+}
+
+.audio-block .sqs-widgets-audio-player:not(.classic).dark .title-wrapper .title {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--text-bright);
+}
+
+.audio-block .sqs-widgets-audio-player:not(.classic).dark .time {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+}
+
+.audio-block .sqs-widgets-audio-player:not(.classic).dark .action:hover {
+  background-color: rgba(242, 168, 60, .12);
+}
+
+
+/* ---- buttons as amber CTAs (GARLAND .btn-apply) ---- */
+/* GARLAND has no box-shadow, so the raised edge is a darker bottom border. The
+   !important is needed because site.css sets button colour via the body-level
+   button-style-solid class at higher specificity. */
+
+.sqs-block-button-element {
+  background-color: var(--amber) !important;
+  color: var(--on-amber) !important;
+  border: 0;
+  border-bottom: 2px solid var(--amber-press);
+  border-radius: 0;
+  box-shadow: none;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  opacity: 1;
+  transition: background-color .15s ease-out;
+}
+
+.sqs-block-button-element:hover {
+  background-color: var(--amber-bright) !important;
+  color: var(--on-amber) !important;
+  opacity: 1;
+}
+
+
+/* ---- dividers: hairline + amber tick ---- */
+
+.sqs-block-horizontalrule {
+  position: relative;
+}
+
+.sqs-block-horizontalrule hr {
+  border: 0;
+  border-top: 1px solid var(--hairline);
+  height: 0;
+}
+
+.sqs-block-horizontalrule::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 40px;
+  height: 2px;
+  background: var(--amber-dim);
+}
+
+/* ---- media: dim structural framing, amber on hover ---- */
+/* The brushsmear divider is decorative and full-bleed, so it opts out of the frame.
+   It carries a per-page block id, hence matching on the image src instead. */
+
+.sqs-block-image .image-block-wrapper:not(:has(img[src*='brushsmear'])),
+.sqs-block-embed .sqs-embed-container {
+  border: 1px solid var(--hairline);
+  transition: border-color .15s ease-out;
+}
+
+.sqs-block-image .image-block-wrapper:not(:has(img[src*='brushsmear'])):hover,
+.sqs-block-embed .sqs-embed-container:hover {
+  border-color: var(--steel);
+}
+
+.sqs-gallery-block-grid .slide img {
+  border: 1px solid var(--hairline);
+}
+
+
+/* ---- long-form content pages ---- */
+/* about.html sets its entire bio paragraph in an <h1>, so it is lead copy rather than
+   a title and opts out of the condensed display tier. It takes the mono voice like the
+   rest of that page, sized down from 23px because mono's fixed advance width reads
+   heavier, and held above the 14px body tier so it still leads. It is the only
+   content-level h1 on the site; every other h1 is the header logo. */
+
+.sqs-html-content h1 {
+  font-family: var(--mono);
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.65em;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text);
+}
+
+/* site.css leaves inline links undecorated and the same colour as body text, so they
+   are indistinguishable from their surroundings. An amber-dim rule is the affordance. */
+
+.sqs-html-content a,
+.sqs-html-content a:visited {
+  color: var(--text-bright);
+  text-decoration: underline;
+  text-decoration-color: var(--amber-dim);
+  text-underline-offset: 3px;
+  transition: color .15s ease-out, text-decoration-color .15s ease-out;
+}
+
+.sqs-html-content a:hover {
+  color: var(--amber);
+  text-decoration-color: var(--amber);
+}
+
+.sqs-html-content ul li::marker {
+  color: var(--amber-dim);
+}
+
+/* reaper-scripts.html is technical documentation end to end: .lua filenames in <strong>,
+   the instructions that follow them, and keybinding lists. The whole content column takes
+   the mono voice. Filenames stay at the bright tier so they still read as headings, and
+   drop to regular weight because only the 400 weight of Plex Mono is self-hosted. */
+
+#page-62a942a05b80b358fd299205 .sqs-html-content p,
+#page-62a942a05b80b358fd299205 .sqs-html-content ul li p {
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.7em;
+  letter-spacing: 0;
+  color: var(--text-soft);
+}
+
+#page-62a942a05b80b358fd299205 .sqs-html-content p strong {
+  font-weight: 400;
+  color: var(--text-bright);
+}
+
+#page-62a942a05b80b358fd299205 .sqs-html-content ul li {
+  margin-bottom: 10px;
+}
+
+#page-62a942a05b80b358fd299205 .sqs-html-content ul li p {
+  margin: 0;
+}
+
+/* about.html credentials + testimonials take the same mono voice as the gear captions.
+   Mono is set 2px below the sans body because its fixed advance width reads larger at
+   a matched size, and leading is opened up because long mono runs need the air.
+   Scoped to the two block ids so the bio lead above stays in the sans voice. */
+
+#block-yui_3_17_2_1_1664131710108_14342 .sqs-html-content ul li p {
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.6em;
+  letter-spacing: 0;
+  margin: 0;
+  color: var(--text-soft);
+}
+
+#block-yui_3_17_2_1_1664131710108_14342 .sqs-html-content ul {
+  margin-top: 28px;
+}
+
+#block-yui_3_17_2_1_1664131710108_14342 .sqs-html-content ul li {
+  margin-bottom: 16px;
+}
+
+#block-yui_3_17_2_1_1691268470418_7081 .sqs-html-content p {
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.85em;
+  letter-spacing: 0;
+  margin-bottom: 28px;
+}
+
+/* Only the 400 weight of Plex Mono is self-hosted, so bold attributions would render
+   as faux bold. They drop to regular in the soft tier instead, which also echoes the
+   muted speaker caption on GARLAND's dialogue box. */
+
+#block-yui_3_17_2_1_1691268470418_7081 .sqs-html-content p strong {
+  font-weight: 400;
+  color: var(--text-soft);
+}
+
+/* unreal.html pairs each plugin with a <strong> title paragraph followed by a plain
+   description paragraph. Only the descriptions take the mono voice; :not(:has(strong))
+   is what separates them from the titles. The footer sits outside this page id. */
+
+#page-68d40e8760c52067f4a0f6b6 .sqs-html-content p:not(:has(strong)) {
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.7em;
+  letter-spacing: 0;
+  color: var(--text-soft);
+}
+
+
+/* ---- footer strip ---- */
+
+#footer {
+  border-top: 1px solid var(--hairline);
+  background-color: var(--strip);
+}
+
+#footer,
+#footer .sqs-html-content p,
+#footer a,
+#footer a:visited {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+#footer a:hover {
+  color: var(--amber);
+}
