@@ -15,6 +15,14 @@
  *
  * The iframe element itself is kept and re-inserted on click rather than rebuilt, so the
  * original allow / referrerpolicy / allowfullscreen attributes carry over untouched.
+ *
+ * It also forces a 1080p rendition. YouTube picks the rendition from the player's own
+ * viewport and refuses to send a large one into a small frame, and every documented way to
+ * ask directly is gone: vq was never honoured on iframe embeds, hd=1 is a Flash-era
+ * leftover, and setPlaybackQuality is deprecated with no effect. What still works is giving
+ * the iframe a genuinely large internal viewport and scaling the result back down to the
+ * frame it should occupy, so the player measures 1920 wide and streams accordingly while
+ * displaying at whatever size the column allows.
  */
 (function () {
   "use strict";
@@ -41,6 +49,56 @@
     });
   }
 
+  /* Internal viewport width to advertise. 1920 is the smallest that reliably lands on a
+     1080p rendition; the player would otherwise settle around 720p at this column width. */
+  var TARGET = 1920;
+
+  /* Below this frame width the trick is switched off. A phone cannot show the extra detail,
+     so forcing 1080p there would spend someone's mobile data for nothing. */
+  var FLOOR = 640;
+
+  var live = [];
+
+  function fit(frame, box) {
+    var w = box.clientWidth;
+    var h = box.clientHeight;
+    if (!w || !h) return;
+
+    /* Fullscreen is the one case where the frame is already as large as the screen, so the
+       scaling is dropped and the player is left to fill it natively. */
+    var full = document.fullscreenElement === frame ||
+               document.webkitFullscreenElement === frame;
+
+    if (w < FLOOR || full) {
+      frame.style.width = "";
+      frame.style.height = "";
+      frame.style.transform = "";
+      return;
+    }
+
+    /* Height is derived from the frame's real ratio rather than assumed to be 16:9 - the
+       wrapper's padding-bottom is 56.2%, so a hardcoded ratio would leave a seam. */
+    frame.style.width = TARGET + "px";
+    frame.style.height = (TARGET * h / w) + "px";
+    frame.style.transform = "scale(" + (w / TARGET) + ")";
+  }
+
+  function refit() {
+    live.forEach(function (frame) {
+      if (frame.parentNode) fit(frame, frame.parentNode);
+    });
+  }
+
+  var pending;
+
+  window.addEventListener("resize", function () {
+    clearTimeout(pending);
+    pending = setTimeout(refit, 150);
+  });
+
+  document.addEventListener("fullscreenchange", refit);
+  document.addEventListener("webkitfullscreenchange", refit);
+
   function build(frame) {
     var match = frame.src.match(EMBED);
     if (!match) return;
@@ -62,6 +120,13 @@
     facade.addEventListener("focus", warm);
 
     facade.addEventListener("click", function () {
+      /* Order matters. The frame is still detached here, so it has no browsing context and
+         the src assignment below loads nothing yet; that leaves room to size it first, and
+         the player consequently boots already measuring TARGET instead of reading the small
+         on-screen box and committing to a low rendition it would only climb out of slowly. */
+      fit(frame, facade.parentNode);
+      live.push(frame);
+
       // Separator depends on whether the captured src already carried a query string.
       frame.src += (frame.src.indexOf("?") === -1 ? "?" : "&") + "autoplay=1";
       frame.removeAttribute("loading");

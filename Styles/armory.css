@@ -437,6 +437,22 @@ body .main-nav .active-link > a:visited {
 }
 
 
+/* ---- youtube player scaling (driven by Scripts/youtube.js) ---- */
+/* The player is handed a 1920px internal viewport and scaled back down to the frame it
+   occupies, which is what makes YouTube commit to a 1080p rendition in a box this size.
+   Its layout box is therefore far wider than anything visible, so the wrapper has to clip
+   or the excess would push a horizontal scrollbar onto the page, and the scale has to be
+   pinned to the top-left corner to stay registered with the frame. */
+
+.embed-block-wrapper.embed-block-provider-YouTube {
+  overflow: hidden;
+}
+
+.embed-block-wrapper.embed-block-provider-YouTube > iframe {
+  transform-origin: top left;
+}
+
+
 /* ---- youtube facade (driven by Scripts/youtube.js) ---- */
 /* The facade button takes the iframe's place inside .embed-block-wrapper, whose aspect
    ratio comes from an inline padding-bottom, so it needs the same absolute fill that
