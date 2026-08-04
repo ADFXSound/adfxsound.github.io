@@ -21,6 +21,26 @@
 
   var EMBED = /youtube-nocookie\.com\/embed\/([A-Za-z0-9_-]+)/;
 
+  /* Deferring the player has one cost: on click there is no warm connection, so the DNS
+     lookup and TLS handshake happen before the player can even start measuring bandwidth,
+     and YouTube opens on a low rendition while it works out what the line can carry.
+     Doing the handshakes on first hover buys that time back without loading anything.
+     Only the two hosts playback actually needs are listed - the media itself streams from
+     a per-session rrN---snXXXX.googlevideo.com name that cannot be known in advance. */
+
+  var warmed = false;
+
+  function warm() {
+    if (warmed) return;
+    warmed = true;
+    ["https://www.youtube-nocookie.com", "https://i.ytimg.com"].forEach(function (host) {
+      var link = document.createElement("link");
+      link.rel = "preconnect";
+      link.href = host;
+      document.head.appendChild(link);
+    });
+  }
+
   function build(frame) {
     var match = frame.src.match(EMBED);
     if (!match) return;
@@ -37,6 +57,9 @@
       label && label !== "YouTube embed" ? "Play video: " + label : "Play video");
 
     facade.appendChild(document.createElement("span")).className = "yt-facade-play";
+
+    facade.addEventListener("pointerenter", warm);
+    facade.addEventListener("focus", warm);
 
     facade.addEventListener("click", function () {
       // Separator depends on whether the captured src already carried a query string.
