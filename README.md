@@ -5,9 +5,16 @@ The website for ADFX Sound, served as static files by GitHub Pages at
 
 It was previously a Squarespace site. This is a rebuild of the same pages with the
 Squarespace runtime removed: no JavaScript framework, no analytics, no cookie banner,
-and no requests to any host except the YouTube embeds. The two scripts it does ship,
-`Scripts/player.js` and `Scripts/nav.js`, replace the ~3.3 MB of Squarespace bundles
-that were only driving the audio players and the mobile menu.
+and no requests to any host except the YouTube embeds (and only after a click). The
+three scripts it does ship — `Scripts/player.js`, `Scripts/nav.js`, and
+`Scripts/youtube.js` — replace the ~3.3 MB of Squarespace bundles that were only
+driving the audio players, the mobile menu, and the embeds.
+
+YouTube embeds are static poster buttons (`.yt-facade`) in the HTML so they stay
+editable in Pinegrow. `youtube.js` loads the real player on click and forces a
+1080p rendition. To add a video: duplicate a facade block, set `data-yt-src` to
+`https://www.youtube.com/embed/{ID}`, set the button's `background-image`
+to `Resources/yt-{ID}.webp`, and drop that WebP into `Resources/`.
 
 ## Layout
 
@@ -17,7 +24,7 @@ that were only driving the audio players and the mobile menu.
 | `Resources/` | Images, converted screen recordings, and video posters |
 | `Audio/` | The MP3s behind the audio players |
 | `Styles/` | Stylesheets, plus the editor sprite icons `site.css` refers to |
-| `Scripts/` | The audio player and the mobile nav toggle |
+| `Scripts/` | Audio player, mobile nav toggle, and YouTube facade |
 | `Fonts/` | Jost (as a stand-in for futura-pt) and the icon font |
 | `_tools/` | Build and verification scripts. Not published |
 

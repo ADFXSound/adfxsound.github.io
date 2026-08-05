@@ -1,20 +1,20 @@
 /*
  * YouTube facade.
  *
- * Replaces each embed with a local thumbnail and our own play button, and only inserts
- * the real iframe once the visitor clicks. Two reasons:
+ * Each embed is a static <button.yt-facade data-yt-src="..."> in the HTML, with a local
+ * poster as its background-image. That keeps the block editable in Pinegrow (and previewable
+ * without a live deploy). This script only wires behaviour: preconnect on hover, then insert
+ * the real iframe on click.
+ *
+ * Two reasons for the facade itself:
  *
  *   1. It removes YouTube's title/avatar chip from the poster frame. That chip is drawn
  *      inside the cross-origin iframe, so no stylesheet here can reach it, and the
  *      parameters that used to hide it are gone - showinfo was removed in 2018 and
  *      modestbranding was deprecated in 2023 (and only ever touched the logo anyway).
  *   2. Every embed otherwise pulls the whole YouTube player up front. trailers.html
- *      carries six. Deferring them also means no third-party request fires until the
- *      visitor asks for one, which is the same intent behind the existing
- *      youtube-nocookie.com host.
- *
- * The iframe element itself is kept and re-inserted on click rather than rebuilt, so the
- * original allow / referrerpolicy / allowfullscreen attributes carry over untouched.
+ *      carries six. Deferring them means no third-party request fires until the
+ *      visitor asks for one.
  *
  * It also forces a 1080p rendition. YouTube picks the rendition from the player's own
  * viewport and refuses to send a large one into a small frame, and every documented way to
@@ -23,11 +23,13 @@
  * the iframe a genuinely large internal viewport and scaling the result back down to the
  * frame it should occupy, so the player measures 1920 wide and streams accordingly while
  * displaying at whatever size the column allows.
+ *
+ * To add a video in Pinegrow: duplicate an existing facade block, set data-yt-src to
+ * https://www.youtube.com/embed/{ID}, set the button's background-image to
+ * Resources/yt-{ID}.webp, and drop that WebP into Resources/.
  */
 (function () {
   "use strict";
-
-  var EMBED = /youtube-nocookie\.com\/embed\/([A-Za-z0-9_-]+)/;
 
   /* Deferring the player has one cost: on click there is no warm connection, so the DNS
      lookup and TLS handshake happen before the player can even start measuring bandwidth,
@@ -41,7 +43,7 @@
   function warm() {
     if (warmed) return;
     warmed = true;
-    ["https://www.youtube-nocookie.com", "https://i.ytimg.com"].forEach(function (host) {
+    ["https://www.youtube.com", "https://i.ytimg.com"].forEach(function (host) {
       var link = document.createElement("link");
       link.rel = "preconnect";
       link.href = host;
@@ -99,48 +101,40 @@
   document.addEventListener("fullscreenchange", refit);
   document.addEventListener("webkitfullscreenchange", refit);
 
-  function build(frame) {
-    var match = frame.src.match(EMBED);
-    if (!match) return;
-    var id = match[1];
+  function play(facade) {
+    var src = facade.getAttribute("data-yt-src");
+    if (!src) return;
 
-    var facade = document.createElement("button");
-    facade.type = "button";
-    facade.className = "yt-facade";
-    facade.style.backgroundImage = "url('Resources/yt-" + id + ".webp')";
+    var frame = document.createElement("iframe");
+    frame.src = src + (src.indexOf("?") === -1 ? "?" : "&") + "autoplay=1";
+    frame.setAttribute("title", facade.getAttribute("aria-label") || "YouTube video");
+    frame.setAttribute("frameborder", "0");
+    frame.setAttribute("allow",
+      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share");
+    frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+    frame.setAttribute("allowfullscreen", "");
 
-    // The generic embeds all carry title="YouTube embed", which says nothing useful.
-    var label = frame.getAttribute("title");
-    facade.setAttribute("aria-label",
-      label && label !== "YouTube embed" ? "Play video: " + label : "Play video");
+    /* Order matters. The frame is still detached here, so it has no browsing context and
+       the src assignment above loads nothing yet; that leaves room to size it first, and
+       the player consequently boots already measuring TARGET instead of reading the small
+       on-screen box and committing to a low rendition it would only climb out of slowly. */
+    fit(frame, facade.parentNode);
+    live.push(frame);
+    facade.replaceWith(frame);
+    frame.focus();
+  }
 
-    facade.appendChild(document.createElement("span")).className = "yt-facade-play";
-
+  function bind(facade) {
     facade.addEventListener("pointerenter", warm);
     facade.addEventListener("focus", warm);
-
     facade.addEventListener("click", function () {
-      /* Order matters. The frame is still detached here, so it has no browsing context and
-         the src assignment below loads nothing yet; that leaves room to size it first, and
-         the player consequently boots already measuring TARGET instead of reading the small
-         on-screen box and committing to a low rendition it would only climb out of slowly. */
-      fit(frame, facade.parentNode);
-      live.push(frame);
-
-      // Separator depends on whether the captured src already carried a query string.
-      frame.src += (frame.src.indexOf("?") === -1 ? "?" : "&") + "autoplay=1";
-      frame.removeAttribute("loading");
-      facade.replaceWith(frame);
-      frame.focus();
+      play(facade);
     });
-
-    frame.replaceWith(facade);
   }
 
   function init() {
-    var frames = document.querySelectorAll(
-      'iframe[src*="youtube-nocookie.com/embed/"]');
-    Array.prototype.forEach.call(frames, build);
+    var facades = document.querySelectorAll(".yt-facade[data-yt-src]");
+    Array.prototype.forEach.call(facades, bind);
   }
 
   if (document.readyState === "loading") {
