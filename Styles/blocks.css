@@ -525,36 +525,25 @@
 .embed-block .sqs-video-overlay {
   transition: opacity 1000ms ease;
 }
-.embed-block .intrinsic,
-.embed-block .sqs-block-content .intrinsic {
+.embed-block .embed-block-wrapper:not(.embed-block-provider-SoundCloud) {
   position: relative;
 }
-.embed-block .intrinsic .embed-block-wrapper:not(.embed-block-provider-SoundCloud),
-.embed-block .sqs-block-content .intrinsic .embed-block-wrapper:not(.embed-block-provider-SoundCloud) {
-  position: relative;
-}
-.embed-block .intrinsic .embed-block-wrapper:not(.embed-block-provider-SoundCloud) .sqs-video-wrapper,
-.embed-block .sqs-block-content .intrinsic .embed-block-wrapper:not(.embed-block-provider-SoundCloud) .sqs-video-wrapper,
-.embed-block .intrinsic .embed-block-wrapper:not(.embed-block-provider-SoundCloud) iframe,
-.embed-block .sqs-block-content .intrinsic .embed-block-wrapper:not(.embed-block-provider-SoundCloud) iframe,
-.embed-block .intrinsic .embed-block-wrapper:not(.embed-block-provider-SoundCloud) .flickr-oembed,
-.embed-block .sqs-block-content .intrinsic .embed-block-wrapper:not(.embed-block-provider-SoundCloud) .flickr-oembed {
+.embed-block .embed-block-wrapper:not(.embed-block-provider-SoundCloud) .sqs-video-wrapper,
+.embed-block .embed-block-wrapper:not(.embed-block-provider-SoundCloud) iframe,
+.embed-block .embed-block-wrapper:not(.embed-block-provider-SoundCloud) .flickr-oembed {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
 }
-.embed-block .intrinsic .sqs-video-overlay img,
-.embed-block .sqs-block-content .intrinsic .sqs-video-overlay img {
+.embed-block .sqs-video-overlay img {
   max-width: none;
 }
-.embed-block .intrinsic .embed-block-provider-SoundCloud,
-.embed-block .sqs-block-content .intrinsic .embed-block-provider-SoundCloud {
+.embed-block .embed-block-provider-SoundCloud {
   padding-bottom: 0 !important;
 }
-.embed-block .intrinsic .embed-block-provider-SoundCloud iframe,
-.embed-block .sqs-block-content .intrinsic .embed-block-provider-SoundCloud iframe {
+.embed-block .embed-block-provider-SoundCloud iframe {
   width: 100%;
 }
 

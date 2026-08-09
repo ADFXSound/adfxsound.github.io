@@ -24,8 +24,11 @@
  * frame it should occupy, so the player measures 1920 wide and streams accordingly while
  * displaying at whatever size the column allows.
  *
- * To add a video in Pinegrow: duplicate an existing facade block, set data-yt-src to
- * https://www.youtube.com/embed/{ID}, set the button's background-image to
+ * Pinegrow: armory.css routes clicks through the facade to .sqs-block-embed so
+ * Move up/down reorders sibling blocks. This script listens on that outer block.
+ *
+ * To add a video: duplicate an embed .sqs-block, set data-yt-src to
+ * https://www.youtube.com/embed/{ID}, the facade background-image to
  * Resources/yt-{ID}.webp, and drop that WebP into Resources/.
  */
 (function () {
@@ -102,6 +105,7 @@
   document.addEventListener("webkitfullscreenchange", refit);
 
   function play(facade) {
+    if (!facade || !facade.isConnected) return;
     var src = facade.getAttribute("data-yt-src");
     if (!src) return;
 
@@ -125,10 +129,28 @@
   }
 
   function bind(facade) {
-    facade.addEventListener("pointerenter", warm);
-    facade.addEventListener("focus", warm);
-    facade.addEventListener("click", function () {
+    /* Prefer the outer embed block: armory.css gives it the mouse hit so Pinegrow
+       selects a sibling-level node, and visitors still start playback from that click. */
+    var block = facade.closest(".sqs-block-embed") || facade;
+    var armed = true;
+
+    function go(event) {
+      if (!armed) return;
+      if (event && event.target && event.target.closest && event.target.closest("iframe")) {
+        return;
+      }
+      armed = false;
       play(facade);
+    }
+
+    block.addEventListener("pointerenter", warm);
+    facade.addEventListener("focus", warm);
+    block.addEventListener("click", go);
+    facade.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        go(event);
+      }
     });
   }
 
