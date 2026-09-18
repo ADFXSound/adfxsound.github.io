@@ -329,6 +329,15 @@ body .main-nav .active-link > a:visited {
   height: auto;
   max-width: 100%;
 }
+
+/* GIF stand-ins stay decorative: no native chrome, no player HUD. */
+.sqs-block-image video.loaded {
+  pointer-events: none;
+}
+
+.sqs-block-image video.loaded::-webkit-media-controls {
+  display: none !important;
+}
 .sqs-block-image .image-block-wrapper.has-ratio > img,
 .sqs-block-image .image-block-wrapper.has-ratio > video,
 .sqs-block-image .image-block-wrapper[style*="padding-bottom:"] > img,

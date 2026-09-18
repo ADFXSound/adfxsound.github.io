@@ -587,7 +587,7 @@
   }
 
   function init() {
-    warm();
+    if (document.querySelector(".yt-facade")) warm();
 
     document.addEventListener("pointerenter", function (e) {
       var block = e.target && e.target.closest && e.target.closest(".sqs-block-embed");
