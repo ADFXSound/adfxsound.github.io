@@ -565,6 +565,213 @@ body .main-nav .active-link > a:visited {
 }
 
 
+/* ---- live youtube HUD (driven by Scripts/youtube.js) ---- */
+/* Controls live in our document, not inside the scaled iframe. The Pinegrow
+   pointer-events: none rule above would otherwise swallow every click on them. */
+
+.sqs-block-embed > .sqs-block-content .yt-player,
+.sqs-block-embed > .sqs-block-content .yt-player * {
+  pointer-events: auto;
+}
+
+.sqs-block-embed > .sqs-block-content .yt-player iframe,
+.sqs-block-embed > .sqs-block-content .yt-player .yt-html5 {
+  pointer-events: none;
+}
+
+.yt-player {
+  position: absolute;
+  inset: 0;
+  outline: none;
+  background: var(--bg);
+}
+
+.yt-player:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: -2px;
+}
+
+.yt-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background-color: var(--bg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.yt-mount,
+.yt-stage iframe,
+.yt-html5 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  transform-origin: top left;
+}
+
+.yt-html5 {
+  object-fit: cover;
+  background: #000;
+  pointer-events: none;
+}
+
+.yt-hit {
+  position: absolute;
+  inset: 0 0 44px 0;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+}
+
+.yt-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 8px;
+  background: #0e1015;
+  border-top: 1px solid var(--hairline);
+}
+
+.yt-btn {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-bright);
+  cursor: pointer;
+  appearance: none;
+}
+
+.yt-btn:hover,
+.yt-btn:focus-visible {
+  color: var(--amber-bright);
+  background: rgba(242, 168, 60, .12);
+}
+
+.yt-btn:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: -2px;
+}
+
+.yt-btn svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  fill: currentColor;
+}
+
+.yt-stop {
+  color: var(--text);
+}
+
+.yt-track {
+  position: relative;
+  flex: 1 1 auto;
+  height: 14px;
+  cursor: pointer;
+  background: var(--steel);
+}
+
+.yt-track:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+.yt-played {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  height: 4px;
+  width: 0;
+  background: var(--amber);
+}
+
+.yt-knob {
+  position: absolute;
+  right: -5px;
+  top: -3px;
+  width: 10px;
+  height: 10px;
+  background: var(--text-bright);
+}
+
+.yt-time {
+  flex: 0 0 auto;
+  min-width: 86px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  text-align: right;
+  user-select: none;
+}
+
+.yt-error {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 50%;
+  z-index: 4;
+  margin: 0;
+  transform: translateY(-50%);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--text-bright);
+  text-align: center;
+}
+
+.yt-player:fullscreen,
+.yt-player:-webkit-full-screen {
+  width: 100%;
+  height: 100%;
+  background: #000;
+}
+
+@media (max-width: 640px) {
+  .yt-bar {
+    height: 48px;
+    gap: 6px;
+    padding: 0 6px;
+  }
+
+  .yt-hit {
+    bottom: 48px;
+  }
+
+  .yt-time {
+    min-width: 72px;
+    font-size: 10px;
+  }
+
+  .yt-btn {
+    flex-basis: 36px;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+
 /* ---- footer strip ---- */
 
 #footer {
