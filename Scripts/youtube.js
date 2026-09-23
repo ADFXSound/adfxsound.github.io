@@ -127,9 +127,12 @@
     var video = document.createElement("video");
     video.className = "yt-html5";
     video.playsInline = true;
+    video.controls = false;
     video.preload = "auto";
     video.src = src;
     video.setAttribute("playsinline", "");
+    video.setAttribute("controlslist", "nodownload nofullscreen noremoteplayback");
+    video.disablePictureInPicture = true;
     stage.insertBefore(video, stage.firstChild);
     this.video = video;
     video.addEventListener("play", function () { onState("playing"); });
@@ -367,6 +370,7 @@
       self.sync();
     }
     if (this.file) {
+      this.root.classList.add("is-local");
       this.engine = new Html5Engine(this.stage, this.file, onState);
       this.startTick();
       return;

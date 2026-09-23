@@ -335,7 +335,9 @@ body .main-nav .active-link > a:visited {
   pointer-events: none;
 }
 
-.sqs-block-image video.loaded::-webkit-media-controls {
+.sqs-block-image video.loaded::-webkit-media-controls,
+.sqs-block-image video.loaded::-webkit-media-controls-overlay-play-button,
+.sqs-block-image video.loaded::-webkit-media-controls-start-playback-button {
   display: none !important;
 }
 .sqs-block-image .image-block-wrapper.has-ratio > img,
@@ -626,6 +628,18 @@ body .main-nav .active-link > a:visited {
   object-fit: cover;
   background: #000;
   pointer-events: none;
+}
+
+/* Chrome/Safari draw a circular play/pause on <video> even with controls=false. */
+.yt-html5::-webkit-media-controls,
+.yt-html5::-webkit-media-controls-overlay-play-button,
+.yt-html5::-webkit-media-controls-start-playback-button,
+.yt-html5::-webkit-media-controls-play-button {
+  display: none !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  pointer-events: none !important;
 }
 
 .yt-hit {
